@@ -61,6 +61,7 @@ func (cfg *apiConfig) handlerUploadThumbnail(w http.ResponseWriter, r *http.Requ
 		respondWithError(w, http.StatusBadRequest, "Wrong form key provided", err)
 		return
 	}
+	defer imgData.Close()
 
 	bytes, err := io.ReadAll(imgData)
 	if err != nil {
@@ -81,14 +82,12 @@ func (cfg *apiConfig) handlerUploadThumbnail(w http.ResponseWriter, r *http.Requ
 	}
 
 	bytesArr := make([]byte, 32)
-	_, err = rand.Read(bytesArr)
-	if err != nil {
+	if _, err = rand.Read(bytesArr); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Something went wrong", err)
 		return
 	}
 
 	encodeStrForFileName := base64.RawURLEncoding.EncodeToString(bytesArr)
-	fmt.Println(encodeStrForFileName)
 	fileName := fmt.Sprintf("%v%v", encodeStrForFileName, fileExtension[0])
 	assetsFolderPath := filepath.Join(cfg.assetsRoot, fileName)
 
