@@ -23,6 +23,7 @@ type apiConfig struct {
 	s3Bucket         string
 	s3Client         *s3.Client
 	s3Region         string
+	s3Ddn            string
 	s3CfDistribution string
 	port             string
 }
@@ -85,6 +86,11 @@ func main() {
 		log.Fatal("PORT environment variable is not set")
 	}
 
+	s3Ddn := os.Getenv("S3_DDN")
+	if s3Ddn == "" {
+		log.Fatal("S3_DDN environment variable is not set")
+	}
+
 	cfg := apiConfig{
 		db:               db,
 		jwtSecret:        jwtSecret,
@@ -93,6 +99,7 @@ func main() {
 		assetsRoot:       assetsRoot,
 		s3Bucket:         s3Bucket,
 		s3Region:         s3Region,
+		s3Ddn:            s3Ddn,
 		s3CfDistribution: s3CfDistribution,
 		port:             port,
 	}
